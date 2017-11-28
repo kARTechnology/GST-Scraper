@@ -1,0 +1,50 @@
+check = function(gstin) {
+
+     var e = document.getElementById("for_gstin");
+     e.value = gstin;
+     var $e = angular.element(e);
+     $e.triggerHandler('input');
+     document.getElementById('lotsearch').click();
+     document.getElementsByClassName('nav nav-tabs responsive tp-tabs')[0].childNodes[5].firstChild.click();
+
+
+ }
+
+ // list of gst number u want to search
+ var t = [
+
+     '37CCMPD3216K1ZK',
+     '37AAGHP5737F1ZY',
+     '37BGZPB9249Q1Z5',
+     '37BFMPB8796N1ZG',
+     '36AAYPI7560D1ZB',
+     '37CJNPK6341Q1ZD',
+     '37BWJPA9062N1Z0',
+     '37BAFPV1118N1ZB',
+     '37AJXPV2680B1ZN',
+     '34DXYPM5159Q1Z7',
+     '37CHJPD1830R1ZZ',
+     '37BEPPG7303L1Z5',
+     '37AGSPV2274P1Z8',
+     '37BMSPB9890A1ZP',
+     '37BDRPM2003A2ZY',
+     '37AEQPK5057H1Z3',
+     '36AIGPP0806R1ZT',
+     '37EJTPK3244Q1Z9'
+
+
+ ];
+
+ var maxLoops = a = t.length;
+ var counter = -1;
+ console.log('START');
+
+ (function next() {
+     if (counter++ > maxLoops - 2) return;
+
+     setTimeout(function() {
+         console.log(counter + ' ' + t[counter]);
+         check(t[counter]);
+         next();
+     }, 500);
+ })();

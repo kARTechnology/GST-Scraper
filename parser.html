@@ -1,0 +1,330 @@
+
+
+
+ 
+<input type="file" name="file" id="file">
+ 
+ 
+
+<script>
+
+document.getElementById('file').onchange = function(){
+
+  var file = this.files[0];
+
+  var reader = new FileReader();
+  reader.onload = function(progressEvent){
+    // Entire file
+   var t = JSON.parse(this.result).log.entries;
+ var validgstin=[];
+ var validaddresses=[];
+ var invalidaddresses=[];
+ var invalidgstin=[];
+ 		
+
+	for(var i = 0; i < t.length; i++) 
+	{ 
+	//console.log(t[i].request); 
+ 	if(t[i].request.method=='POST') 
+	if(t[i].request.url=='https://services.gst.gov.in/services/auth/api/search/tp')
+	{
+      if(t[i].response.content.text.indexOf('gstin')>0)
+	  { 
+	    try  
+		{
+			validgstin.push(JSON.parse(t[i].response.content.text)) 
+		} catch(e) 
+		{
+        alert(e); // error in the above string (in this case, yes)!
+		invalidgstin.push({'gstin': JSON.parse(t[i].request.postData.text).gstin});
+console.log(t[i].response.content.text)
+		}
+	  }
+	  else
+	  {
+console.log(t[i].response.content.text)
+
+	  invalidgstin.push({'gstin': JSON.parse(t[i].request.postData.text).gstin});
+	  } 
+	} 
+	else if (t[i].request.url=='https://services.gst.gov.in/services/auth/api/search/tp/busplaces')
+	{
+	 if(t[i].response.content.text.indexOf('gstin')>0)
+	  { 
+	   try 
+		{
+		var addr = JSON.parse(t[i].response.content.text.replace(new RegExp(', "NA"', 'g'), ', '));
+		addr.gstin=JSON.parse(t[i].request.postData.text).gstin
+		validaddresses.push(addr) 
+		} catch(e) 
+		{ 
+       // alert(e); // error in the above string (in this case, yes)!
+		
+		var addr = {'gstin': JSON.parse(t[i].request.postData.text).gstin}
+		addr.add=t[i].response.content.text
+		invalidaddresses.push(addr)  
+
+		} 
+	  } 
+	  else
+	  {
+	  invalidaddresses.push({'gstin': JSON.parse(t[i].request.postData.text).gstin});
+ 
+	  }  
+	}
+	
+	
+	 
+	
+	}
+	
+    
+	console.log('validgstin');
+	console.log(validgstin);
+	console.log('invalidgstin');
+	console.log(invalidgstin);
+	console.log('validaddresses');
+	console.log(validaddresses);
+	console.log('invalidvalidaddresses');
+	console.log(invalidaddresses);
+	
+	for(var i = 0; i < validgstin.length; i++) 
+	{
+		for(var j = 0; j < validaddresses.length; j++) 
+		{
+		if(validgstin[i].gstin==validaddresses[j].gstin)
+		{validgstin[i].pradr = validaddresses[j].pradr;
+		 
+validgstin[i].adadr = validaddresses[j].adadr;
+}
+		
+		}
+	}
+		
+		
+		
+	printgstin(validgstin);
+	printinvalidgstin(invalidgstin);
+	printinvalidaddress(invalidaddresses)
+    // By lines
+  //  var lines = this.result.split('\n');
+  //  for(var line = 0; line < lines.length; line++){
+  //    console.log(lines[line]);
+  //  }
+  };
+  
+  
+  reader.readAsText(file);
+};
+
+
+printgstin=function (list){    
+ document.write('<table >');
+ document.write( '<th> GSTIN/UIN</th>')
+ document.write( '<th> Taxpayer Type</th>')
+ document.write( '<th> Legal Name of Business</th>')
+ document.write( '<th> Mobile Number</th>')
+ document.write( '<th> Email</th>')
+ document.write( '<th> State Juridiction</th>')
+ document.write( '<th> Center Juridiction</th>')
+ document.write( '<th> GSTIN/UIN Status</th>')
+ document.write( '<th> Date of Registration</th>')
+ document.write( '<th> Constitution of Business</th>')
+ 
+ document.write( '<th> Permanent Address</th>')
+ document.write( '<th> Mobile Number</th>')
+ document.write( '<th> Email</th>')
+ document.write( '<th> Nature Of Business Activities</th>')
+ 
+ 
+ document.write( '<th> Additional Address 1</th>')
+ document.write( '<th> Mobile Number 1</th>')
+ document.write( '<th> Email 1</th>')
+ document.write( '<th> Nature Of Business Activities 1</th>')
+ 
+ document.write( '<th> Additional Address 2</th>')
+ document.write( '<th> Mobile Number 2</th>')
+ document.write( '<th> Email 2</th>')
+ document.write( '<th> Nature Of Business Activities 2</th>')
+ 
+ document.write( '<th> Additional Address 3</th>')
+ document.write( '<th> Mobile Number 3</th>')
+ document.write( '<th> Email 3</th>')
+ document.write( '<th> Nature Of Business Activities 3</th>')
+ 
+ document.write( '<th> Additional Address 4</th>')
+ document.write( '<th> Mobile Number 4</th>')
+ document.write( '<th> Email 4</th>')
+ document.write( '<th> Nature Of Business Activities 4</th>')
+ 
+var com=0,reg=0, pro=0;
+for(var i=0; i<list.length ;i ++)
+{
+var a=list[i];
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write(a.gstin);
+ document.write( '</td><td>');
+ document.write(a.dty);  
+ document.write( '</td><td>');
+ document.write(a.lgnm);
+ document.write( '</td><td>');
+ document.write(a.contacted.mobNum);
+ document.write( '</td><td>');
+ document.write(a.contacted.email);
+ document.write( '</td><td>');
+ document.write(a.stj);
+ document.write( '</td><td>');
+ document.write(a.ctj);
+ document.write( '</td><td>');
+ document.write(a.sts);
+ document.write( '</td><td>');
+ document.write(a.rgdt);
+ document.write( '</td><td>');
+ document.write(a.ctb);
+ document.write( '</td><td>');
+ 
+ document.write(a.pradr.adr || '-');
+ document.write( '</td><td>');
+ document.write(a.pradr.mb || '-');
+ document.write( '</td><td>');
+ document.write(a.pradr.em || '-');
+ document.write( '</td><td>');
+ document.write(a.pradr.ntr || '-');
+ document.write( '</td><td>');
+ 	if(Array.isArray(a.adadr) )
+	{
+  if(a.adadr[0])
+  {
+  document.write(a.adadr[0].adr|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[0].mb|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[0].em|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[0].ntr|| '-');
+  document.write( '</td><td>');
+}
+  
+    if(a.adadr[1])
+  {
+ document.write(a.adadr[1].adr|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[1].mb|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[1].em|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[1].ntr|| '-');
+  document.write( '</td><td>');
+  }
+  
+   if(a.adadr[2])
+  {
+ document.write(a.adadr[2].adr|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[2].mb|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[2].em|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[2].ntr|| '-'); 
+ }
+  if(a.adadr[3])
+  {
+ document.write(a.adadr[3].adr|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[3].mb|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[3].em|| '-');
+ document.write( '</td><td>');
+ document.write(a.adadr[3].ntr|| '-');
+  document.write( '</td><td>');
+  }
+  }
+  document.write( '</tr>');
+  
+
+ if(a.dty=="Composition") com++;
+ if(a.dty=="Regular") reg++;
+ if(a.dty=="Provisional") pro++;
+} 
+ document.write('</table>');
+ document.write( '<hr>');
+ document.write('<table>');
+ document.write( '<th> Total</th>')
+ document.write( '<th> Regular</th>')
+ document.write( '<th> Provisional</th>')
+ document.write( '<th> Composition</th>')
+
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write( list.length);
+ document.write( '</td><td>');
+ document.write( reg);
+ document.write( '</td><td>');
+ document.write( com);
+ document.write( '</td><td>');
+ document.write( pro);
+ document.write( '</td></tr>');
+ document.write('</table>');
+}
+
+printinvalidgstin=function (list){   
+
+ document.write( '<hr>'); 
+ document.write('<table >');
+ document.write( '<th> INVALID GSTIN/UIN</th>')  
+ 
+for(var i=0; i<list.length ;i ++)
+{
+var a=list[i];
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write(a.gstin); 
+  document.write( '</td></tr>');
+ 
+} 
+ document.write('</table>');
+ document.write( '<hr>');
+ document.write('<table>');
+ document.write( '<th>INVALID Total</th>') 
+
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write( list.length); 
+ document.write( '</td></tr>');
+ document.write('</table>');
+}
+
+printinvalidaddress=function (list){   
+
+ document.write( '<hr>'); 
+ document.write('<table >');
+ document.write( '<th> GSTIN/UIN</th>')  
+ document.write( '<th> INVALID address parsing</th>')  
+ 
+for(var i=0; i<list.length ;i ++)
+{
+var a=list[i];
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write(a.gstin); 
+ document.write( '</td><td>');
+ document.write(a.add); 
+  document.write( '</td></tr>');
+ 
+} 
+ document.write('</table>');
+ document.write( '<hr>');
+ document.write('<table>');
+ document.write( '<th>INVALID Total</th>') 
+
+ document.write( '<tr>');
+ document.write( '<td>');
+ document.write( list.length); 
+ document.write( '</td></tr>');
+ document.write('</table>');
+}
+
+</script>
+
+
