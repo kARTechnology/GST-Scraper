@@ -1,41 +1,59 @@
+ //  -- run this once and let the page reload
+ //  angular.reloadWithDebugInfo()
+ 
+ 
+ 
 check = function(gstin) {
-
-     var e = document.getElementById("for_gstin");
-     e.value = gstin;
-     var $e = angular.element(e);
-     $e.triggerHandler('input');
-     document.getElementById('lotsearch').click();
-     document.getElementsByClassName('nav nav-tabs responsive tp-tabs')[0].childNodes[5].firstChild.click();
+var e = document.getElementById("for_gstin");
+angular.element(e).scope().searchTaxpayertable(gstin);
+angular.element(e).scope().for_gstin.num=gstin
+angular.element(e).scope().searchTaxpayer();
+}
 
 
- }
+var list = [ 
 
- // list of gst number u want to search
- var t = [
-
-     '37CCMPD3216K1ZK',
-     '37AAGHP5737F1ZY',
-     '37BGZPB9249Q1Z5',
-     '37BFMPB8796N1ZG',
-     '36AAYPI7560D1ZB',
-     '37CJNPK6341Q1ZD',
-     '37BWJPA9062N1Z0',
-     '37BAFPV1118N1ZB',
-     '37AJXPV2680B1ZN',
-     '34DXYPM5159Q1Z7',
-     '37CHJPD1830R1ZZ',
-     '37BEPPG7303L1Z5',
-     '37AGSPV2274P1Z8',
-     '37BMSPB9890A1ZP',
-     '37BDRPM2003A2ZY',
-     '37AEQPK5057H1Z3',
-     '36AIGPP0806R1ZT',
-     '37EJTPK3244Q1Z9'
-
-
- ];
-
- var maxLoops = a = t.length;
+'34AAGFL5301H1ZO',
+'37DDOPK3660Q1ZO',
+'37ASHPB8850G1ZN',
+'37AFOPB4878C1ZB',
+'37AVWPM1827A1ZG',
+'37AZEPT3068N1ZN',
+'37AMQPT8770J1ZY',
+'37ECVPS2575B1Z1',
+'37APGPC9835C1ZY',
+'37ACYPG8947L2ZG',
+'37AFDPI6029R1ZX',
+'37CECPK8123E1ZO',
+'37BAYPJ4264N1ZR',
+'37BAKPT3515J1ZB',
+'37AWKPN6779K2ZI',
+'37ABQFS2697L1Z5',
+'37AVZPA5320M1Z4',
+'37BARPB3160L1ZH',
+'37AYLPP3244J1Z0',
+'37AZLPP7017N1ZN',
+'37ACDPO4521D1ZX',
+'37AKFPV7348R1ZZ',
+'37ADAPB0638A1ZF',
+'37AKHPV0443R1ZF',
+'37AODPN0979A2Z0',
+'37AEMPV4437L1ZP',
+'34AHLPR7784G1ZP',
+'36AGRPD5901C1ZO',
+'37AVWPK1552C1ZG',
+'37ACSPI1015P1Z8',
+'37AFFPL2179F1ZE',
+'37AVEPA3210F1ZB',
+'37ANHPJ4255C2Z5',
+'37ANAPK7966Q1Z3',
+'37CQDPD3905N1ZQ',
+'37ALYPK2792G1ZE'
+ 
+		];
+  
+  
+ var maxLoops =  list.length;
  var counter = -1;
  console.log('START');
 
@@ -43,8 +61,8 @@ check = function(gstin) {
      if (counter++ > maxLoops - 2) return;
 
      setTimeout(function() {
-         console.log(counter + ' ' + t[counter]);
-         check(t[counter]);
+         console.log(counter + ' ' + list[counter]);
+         check(list[counter]);
          next();
      }, 500);
- })();
+})();
